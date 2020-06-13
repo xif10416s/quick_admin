@@ -1,0 +1,33 @@
+info:
+  app:
+    name: quick amdin
+    code: quick-admin
+    version: 0.0.1-SNAPSHOT
+
+spring:
+  application: quick amdin
+  profiles:
+    active: dev
+
+  messages:
+    basename: i18n/messages,i18n/validationmessages
+    encoding: utf-8
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*/*Mapper.xml
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+
+management:
+  endpoints:
+    web:
+      base-path:
+      exposure:
+        include: info,health,shutdown
+  endpoint:
+    shutdown:
+      enabled: false
+

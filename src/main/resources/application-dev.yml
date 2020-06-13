@@ -1,0 +1,61 @@
+server:
+  port: 31100
+  servlet:
+    context-path:
+  tomcat:
+    threads:
+      minSpare: 50
+      max: 100
+    max-connections: 100
+    accept-count: 100
+    connection-timeout: 10000
+
+
+logging:
+  level:
+    root: INFO
+    org:
+      fxi: DEBUG
+
+spring:
+  datasource:
+    druid:
+      stat-view-servlet:
+        login-username: admin
+        login-password: 123456
+    dynamic:
+      druid:
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        validation-query: select version()
+        use-global-data-source-stat: true
+        filters: stat,wall
+        initial-size: 5
+        min-idle: 5
+        max-active: 50
+      primary: master
+      datasource:
+        master:
+          url: jdbc:mysql://localhost:3306/quick_admin
+          username: root
+          password: root
+
+
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+
+
+jjwt:
+  secret: g61P7EO7Bgl0eV4XHjvjqxrfGuoos2MK78&fCRJNM3Fv*@6#K7
+  expired-time: 7200
+  trust-ips:
+    - 127.0.0.1
+    - 192.168.100.17
