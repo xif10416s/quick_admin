@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.fxi.quick.sys.entity.SysUser;
+import org.fxi.quick.sys.entity.SysUserDepart;
+import org.fxi.quick.sys.model.SysUserDepartModel;
 
 /**
  * <p>
@@ -18,6 +20,15 @@ import org.fxi.quick.sys.entity.SysUser;
  * @since 2018-12-20
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
+
+	/**
+	 *  根据用户Ids,查询用户所属部门名称信息
+	 * @param userIds
+	 * @return
+	 */
+	List<SysUserDepartModel> getDepNamesByUserIds(@Param("userIds")List<Long> userIds);
+
+
 	/**
 	  * 通过用户账号查询用户信息
 	 * @param username
@@ -141,4 +152,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	List<SysUser> queryByDepIds(@Param("departIds") List<String> departIds,
       @Param("username") String username);
+
+
 }

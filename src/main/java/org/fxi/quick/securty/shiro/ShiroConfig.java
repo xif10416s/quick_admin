@@ -126,8 +126,8 @@ public class ShiroConfig {
   @Bean
   protected ShiroFilterChainDefinition shiroFilterChainDefinition() {
     DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-    chainDefinition.addPathDefinition("/sys/v1/login", "anon");  //login不做认证
-    chainDefinition.addPathDefinition("/sys/v1/logout", "anon"); //
+    chainDefinition.addPathDefinition("/sys/login", "anon");  //login不做认证
+    chainDefinition.addPathDefinition("/sys/logout", "anon"); //
     chainDefinition.addPathDefinition("/sys/common/401", "anon");
 
 
@@ -148,16 +148,6 @@ public class ShiroConfig {
     return chainDefinition;
   }
 
-  /**
-   * 获取filter map
-   *
-   * @return
-   */
-  private Map<String, Filter> getFilterMap(ISysUserService userService,JwtConfig jwtConfig) {
-    Map<String, Filter> filterMap = new LinkedHashMap<>(2);
-    filterMap.put(JWT_FILTER_NAME, new JwtFilter(jwtConfig));
-    return filterMap;
-  }
 
 
   /**

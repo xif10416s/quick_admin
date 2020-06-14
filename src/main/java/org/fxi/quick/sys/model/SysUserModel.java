@@ -1,4 +1,4 @@
-package org.fxi.quick.sys.entity;
+package org.fxi.quick.sys.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,10 +20,11 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-public class SysUser extends BaseEntity implements Serializable {
+public class SysUserModel  implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private Long id;
 
     /**
      * 登录账号
@@ -34,18 +35,6 @@ public class SysUser extends BaseEntity implements Serializable {
      * 真实姓名
      */
     private String realname;
-
-    /**
-     * 密码
-     */
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
-    /**
-     * md5密码盐
-     */
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String salt;
 
     /**
      * 头像
@@ -125,15 +114,4 @@ public class SysUser extends BaseEntity implements Serializable {
      */
     private String departIds;
 
-
-    /**
-     * 第三方登录的唯一标识
-     */
-    private String thirdId;
-
-    /**
-     * 第三方类型 <br>
-     * （github/github，wechat_enterprise/企业微信，dingtalk/钉钉）
-     */
-    private String thirdType;
 }

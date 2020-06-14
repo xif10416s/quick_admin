@@ -31,7 +31,7 @@
         <dynamic-datasource.version>3.0.0</dynamic-datasource.version>
         <druid.version>1.1.21</druid.version>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
-        <jjwt.version>3.10.2</jjwt.version>
+        <jjwt.version>0.10.5</jjwt.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-text.version>1.6</commons-text.version>
         <commons-io.version>2.6</commons-io.version>
@@ -151,28 +151,28 @@
 
         <!-- JWT -->
         <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.auth0</groupId>-->
+            <!--<artifactId>java-jwt</artifactId>-->
+            <!--<version>${jjwt.version}</version>-->
+        <!--</dependency>-->
 
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.10.5</version>
+            <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
 

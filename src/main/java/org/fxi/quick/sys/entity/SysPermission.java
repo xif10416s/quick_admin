@@ -22,11 +22,11 @@ public class SysPermission extends BaseEntity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-
+  public static final int NO_PARENT_ID = -1 ;
   /**
    * 父id
    */
-  private String parentId;
+  private Long parentId;
 
   /**
    * 菜单名称
@@ -79,13 +79,11 @@ public class SysPermission extends BaseEntity implements Serializable {
   /**
    * 是否叶子节点: 1:是  0:不是
    */
-  @TableField(value = "is_leaf")
   private boolean leaf;
 
   /**
    * 是否路由菜单: 0:不是  1:是（默认值1）
    */
-  @TableField(value = "is_route")
   private boolean route;
 
 

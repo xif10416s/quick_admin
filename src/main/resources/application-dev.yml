@@ -1,7 +1,7 @@
 server:
   port: 31100
   servlet:
-    context-path:
+    context-path: /admin
   tomcat:
     threads:
       minSpare: 50

@@ -19,6 +19,7 @@ import org.fxi.quick.securty.jwt.JwtUtil;
 import org.fxi.quick.sys.entity.SysUser;
 import org.fxi.quick.sys.model.SysLoginModel;
 import org.fxi.quick.sys.service.ISysUserService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @author initializer
  * @date 2018-12-01 10:47
  */
-@Api(tags = "系统登录API")
+@Api(description = "系统登录API")
 @Slf4j
 @RestController
+@CrossOrigin
 public class AuthenticationController {
 
     @Resource
@@ -41,8 +43,8 @@ public class AuthenticationController {
      * @param sysLoginModel
      * @return
      */
-    @ApiOperation(value = "登录")
-    @PostMapping(value = "/sys/v1/login")
+    @ApiOperation(value = "登录", produces="application/json")
+    @PostMapping(value = "/sys/login")
     public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel){
 
         SysUser user = userService.getOne(new QueryWrapper<SysUser>().lambda()
@@ -66,7 +68,7 @@ public class AuthenticationController {
      */
     @ApiOperation(value = "权限测试")
     @RequiresPermissions("user:add")
-    @PostMapping(value = "/sys/v1/test")
+    @PostMapping(value = "/sys/test")
     public Result test(){
         return Result.ok("");
     }
@@ -111,7 +113,7 @@ public class AuthenticationController {
      * @param response
      * @return
      */
-    @PostMapping(value = "/sys/v1/logout")
+    @PostMapping(value = "/sys/logout")
     public Result<Object> logout(HttpServletRequest request, HttpServletResponse response) {
         return Result.ok("退出登录成功！");
     }

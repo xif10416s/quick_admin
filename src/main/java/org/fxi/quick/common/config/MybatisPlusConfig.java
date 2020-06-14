@@ -1,6 +1,5 @@
 package org.fxi.quick.common.config;
 
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import org.mybatis.spring.annotation.MapperScan;
@@ -32,18 +31,5 @@ public class MybatisPlusConfig {
         return paginationInterceptor;
     }
 
-    /**
-     * 乐观锁
-     *
-     * <li>支持的数据类型只有:int,Integer,long,Long,Date,Timestamp,LocalDateTime
-     * <li>整数类型下 newVersion = oldVersion + 1
-     * <li>newVersion 会回写到 entity 中
-     * <li>仅支持 updateById(id) 与 update(entity, wrapper) 方法
-     * <li>在 update(entity, wrapper) 方法下, wrapper 不能复用!!!
-     */
-    @Bean
-    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
-        return new OptimisticLockerInterceptor();
-    }
 
 }

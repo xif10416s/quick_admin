@@ -21,7 +21,7 @@ public class Swagger2Config {
     return new Docket(DocumentationType.SWAGGER_2)
         .apiInfo(apiInfo())
         .select()
-        .apis(RequestHandlerSelectors.basePackage("org.fxi.quick.*.controller"))
+        .apis(RequestHandlerSelectors.basePackage("org.fxi.quick"))
         .paths(PathSelectors.any())
         .build();
   }
