@@ -109,15 +109,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
   @Override
   public void checkUserIsEffective(SysUser sysUser) {
     if (sysUser == null) {
-      throw new BizException("", "该用户不存在，请注册");
+      throw new BizException("A0201");
     }
     //情况2：根据用户信息查询，该用户已注销
     if (CommonConstant.DEL_FLAG_1.toString().equals(sysUser.getDelFlag())) {
-      throw new BizException("", "该用户已注销");
+      throw new BizException("A0203");
     }
     //情况3：根据用户信息查询，该用户已冻结
     if (CommonConstant.USER_FREEZE.equals(sysUser.getStatus())) {
-      throw new BizException("", "该用户已冻结");
+      throw new BizException("A0202");
     }
   }
 

@@ -118,8 +118,8 @@ CREATE TABLE `sys_permission`  (
   `internal_or_external` tinyint(1) NULL DEFAULT NULL COMMENT '外链菜单打开方式 0/内部打开 1/外部打开',
   `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
   INDEX `index_prem_pid`(`parent_id`) USING BTREE,
-  INDEX `index_prem_is_route`(`is_route`) USING BTREE,
-  INDEX `index_prem_is_leaf`(`is_leaf`) USING BTREE,
+  INDEX `index_prem_is_route`(`route`) USING BTREE,
+  INDEX `index_prem_is_leaf`(`leaf`) USING BTREE,
   INDEX `index_prem_sort_no`(`sort_no`) USING BTREE,
   INDEX `index_prem_del_flag`(`del_flag`) USING BTREE,
   INDEX `index_menu_type`(`menu_type`) USING BTREE,
@@ -313,4 +313,4 @@ CREATE TABLE `sys_user_depart`  (
 -- Records of sys_user_depart
 -- ----------------------------
 INSERT INTO `sys_user_depart` VALUES (1, 1, 2);
-INSERT INTO `sys_user_depart` VALUES (1, 1, 3);
+INSERT INTO `sys_user_depart` VALUES (2, 1, 3);

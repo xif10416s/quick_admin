@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,16 +17,24 @@ import org.fxi.quick.common.exception.BizException;
 import org.fxi.quick.common.util.PasswordUtil;
 import org.fxi.quick.common.vo.AccountContext;
 import org.fxi.quick.securty.jwt.JwtUtil;
+import org.fxi.quick.sys.convert.SysDepartConverter;
+import org.fxi.quick.sys.convert.SysUserConverter;
+import org.fxi.quick.sys.entity.SysDepart;
 import org.fxi.quick.sys.entity.SysUser;
+import org.fxi.quick.sys.model.LoginUserModel;
 import org.fxi.quick.sys.model.SysLoginModel;
+import org.fxi.quick.sys.service.ISysDepartService;
 import org.fxi.quick.sys.service.ISysUserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * CrossOrigin <= /sys/login 不在JWTFilter prehandler处理
  * @author initializer
  * @date 2018-12-01 10:47
  */
@@ -36,29 +45,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     @Resource
-    private ISysUserService userService;
+    private ISysUserService sysUserService;
+
+    @Resource
+    private ISysDepartService sysDepartService;
 
     /**
-     * 登录
+     * 用户登录
      * @param sysLoginModel
      * @return
      */
     @ApiOperation(value = "登录", produces="application/json")
     @PostMapping(value = "/sys/login")
-    public Result<JSONObject> login(@RequestBody SysLoginModel sysLoginModel){
-
-        SysUser user = userService.getOne(new QueryWrapper<SysUser>().lambda()
+    public Result<LoginUserModel> login(@RequestBody SysLoginModel sysLoginModel){
+        SysUser user = sysUserService.getOne(new QueryWrapper<SysUser>().lambda()
             .eq(SysUser::getUsername, sysLoginModel.getUsername()));
-
-        // 用户名或密码错误
         if (user == null || !StringUtils
             .equals(PasswordUtil.encrypt(sysLoginModel.getUsername(), sysLoginModel.getPassword(), user.getSalt()),
                 user.getPassword())) {
-            throw new BizException("400204");
+            throw new BizException("A0201");
         }
-
-        userService.checkUserIsEffective(user);
-
+        sysUserService.checkUserIsEffective(user);
         return userInfo(user);
     }
 
@@ -80,29 +87,20 @@ public class AuthenticationController {
      * @param sysUser
      * @return
      */
-    private Result<JSONObject> userInfo(SysUser sysUser) {
-        Result<JSONObject> result = new Result<JSONObject>();
+    private Result<LoginUserModel> userInfo(SysUser sysUser) {
+        Result<LoginUserModel> result = new Result<>();
         // 生成token
         String token = JwtUtil.createToken(
             new AccountContext(sysUser.getId(), sysUser.getUsername(), sysUser.getUserIdentity()));
-
-
+        LoginUserModel loginUserModel = new LoginUserModel();
         // 获取用户部门信息
-        JSONObject obj = new JSONObject();
-//        List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
-//        obj.put("departs", departs);
-//        if (departs == null || departs.size() == 0) {
-//            obj.put("multi_depart", 0);
-//        } else if (departs.size() == 1) {
-//            sysUserService.updateUserDepart(username, departs.get(0).getOrgCode());
-//            obj.put("multi_depart", 1);
-//        } else {
-//            obj.put("multi_depart", 2);
-//        }
-        obj.put("token", token);
-        obj.put("userInfo", sysUser);
-//        obj.put("sysAllDictItems", sysDictService.queryAllDictItems());
-        result.setResult(obj);
+        List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());
+        loginUserModel.setDeparts(SysDepartConverter.INSTANCE.convertToModel(departs));
+        loginUserModel.setMultiDepart(Math.max(departs.size(),2));
+        loginUserModel.setToken(token);
+        loginUserModel.setUserInfo(SysUserConverter.INSTANCE.convertToModel(sysUser));
+        //TODO  sysAllDictItems
+        result.setResult(loginUserModel);
         result.success("登录成功");
         return result;
     }
@@ -119,6 +117,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping("/sys/common/401")
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<?> handler401(HttpServletRequest request) {
         return Result.error(CommonConstant.RESPONSE_CODE_401,"未登录");
     }

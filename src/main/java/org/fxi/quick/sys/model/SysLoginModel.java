@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Author scott
  * @since 2019-01-18
  */
-@ApiModel(value = "登录对象", description = "登录对象")
+@ApiModel(value = "登录请求对象", description = "登录请求对象")
 public class SysLoginModel {
 
   @ApiModelProperty(value = "账号")

@@ -55,7 +55,8 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     String token = httpServletRequest.getHeader("Authorization");
     if (StringUtils.isBlank(token)) {
-      throw new BizException("400201");
+      log.error("获取步到Token");
+      throw new BizException("A0301");
     }
 
     try {
@@ -63,19 +64,18 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
           jwtConfig.getSecret());
       if (claims == null) {
         log.error("解析Token失败");
-        throw new BizException("400202");
+        throw new BizException("A0301");
       }
       Long userId = Long.valueOf(claims.getSubject());
       AccountContext accountCtx = new AccountContext(userId,(String) claims.get("userName"),(Integer) claims.get("userType"));
       log.trace("设置用户信息到当前请求, userId={}", userId);
       AccountContextUtil.setAccountContext(httpServletRequest, accountCtx);
 
-      // 时间到了最长过期时间的一半时，即生成新的token
+      // 时间到了最长过期时间的一半时，即生成新的token TODO
       int mv2 = -2;
       if (DateUtils.addSeconds(claims.getExpiration(),
           (int) (jwtConfig.getExpiredTime() / mv2)).getTime() < (new Date())
           .getTime()) {
-
         httpServletResponse.setHeader("Authorization", JwtUtil.createToken(accountCtx));
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization");
         httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
@@ -83,10 +83,10 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
     } catch (ExpiredJwtException be) {
       log.error("Token 过期：{}", httpServletRequest.getRequestURI(), be);
-      throw new BizException("400203");
+      throw new BizException("A0311");
     } catch (Exception e) {
       log.error("验证 Token 时出现异常 {}", httpServletRequest.getRequestURI(), e);
-      throw new BizException("400202");
+      throw new BizException("A0300");
     }
 
     JwtToken jwtToken = new JwtToken(token);

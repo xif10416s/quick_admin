@@ -52,7 +52,10 @@ public class ShiroConfig {
   private static final String SHIRO_FILTER_NAME = "shiroFilter";
 
 
-
+  /**
+   * 身份匹配验证
+   * @return
+   */
   @Bean
   public CredentialsMatcher credentialsMatcher() {
     return new JWTCredentialsMatcher();
@@ -61,7 +64,7 @@ public class ShiroConfig {
 
   /**
    * JWT数据源验证
-   *
+   * JWTRealm既要验证身份，又要做权限认证
    * @return
    */
   @Bean
@@ -73,6 +76,10 @@ public class ShiroConfig {
   }
 
 
+  /**
+   *  关闭shiro自带的session
+   * @return
+   */
   @Bean
   public SessionStorageEvaluator sessionStorageEvaluator() {
     DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultWebSessionStorageEvaluator();

@@ -19,6 +19,10 @@ import org.fxi.quick.securty.jwt.JwtUtil;
 import org.fxi.quick.sys.entity.SysUser;
 import org.fxi.quick.sys.service.ISysUserService;
 
+/**
+ * 授权访问处理
+ * JWTRealm既要验证身份，又要做权限认证
+ */
 @Slf4j
 public class JwtRealm extends AuthorizingRealm {
 
@@ -64,18 +68,11 @@ public class JwtRealm extends AuthorizingRealm {
     // 校验token
     JwtToken jwtToken = (JwtToken) authenticationToken;
     if (jwtToken == null) {
-      throw new AuthenticationException("jwtToken不能为空");
+      throw new AuthenticationException("A0301");
     }
-
     String token = jwtToken.getPrincipal().toString();
     SysUser sysUser = checkUserTokenIsEffect(token);
-
-    return new SimpleAuthenticationInfo(
-        sysUser,
-        token,
-        getName()
-    );
-
+    return new SimpleAuthenticationInfo(sysUser, token, getName());
   }
 
   /**
@@ -93,13 +90,10 @@ public class JwtRealm extends AuthorizingRealm {
       log.error("Token 过期：{}", be);
       throw new AuthenticationException("Token 过期!");
     }
-
     if (userId == null) {
       throw new AuthenticationException("token非法无效!");
     }
-
     // 查询用户信息
-    log.debug("———校验token是否有效————checkUserTokenIsEffect——————— " + token);
     SysUser loginUser = userService.getBaseMapper().selectById(userId);
     if (loginUser == null) {
       throw new AuthenticationException("用户不存在!");
@@ -108,7 +102,6 @@ public class JwtRealm extends AuthorizingRealm {
     if (loginUser.getStatus() != 1) {
       throw new AuthenticationException("账号已被锁定,请联系管理员!");
     }
-
     return loginUser;
   }
 
