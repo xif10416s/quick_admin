@@ -40,8 +40,10 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     try {
       executeLogin(request, response);
       return true;
+    } catch (BizException e) {
+      response401(request,response,e.getMessage());
     } catch (Exception e) {
-      response401(request,response);
+      response401(request,response,e.getMessage());
     }
     return false;
   }
@@ -55,7 +57,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     String token = httpServletRequest.getHeader("Authorization");
     if (StringUtils.isBlank(token)) {
-      log.error("获取步到Token");
+      log.error("获取不到Token");
       throw new BizException("A0301");
     }
 
@@ -119,10 +121,12 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
   /**
    * 将非法请求跳转到 /401
    */
-  private void response401(ServletRequest req, ServletResponse resp) {
+  private void response401(ServletRequest req, ServletResponse resp , String message) {
     try {
       HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
-      httpServletResponse.sendRedirect("/sys/common/401");
+      HttpServletRequest httpServletRequest = (HttpServletRequest)req;
+      httpServletRequest.getSession().setAttribute("msg",message);
+      httpServletResponse.sendRedirect(req.getServletContext().getContextPath() + "/sys/common/401");
     } catch (Exception e) {
       log.error(e.getMessage());
     }

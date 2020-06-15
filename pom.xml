@@ -42,6 +42,7 @@
         <hutool-all.version>5.2.3</hutool-all.version>
         <securty.shrio.version>1.5.2</securty.shrio.version>
         <swagger2-spring.version>2.9.2</swagger2-spring.version>
+        <activiti.version>6.0.0</activiti.version>
     </properties>
 
     <dependencies>
@@ -229,6 +230,19 @@
             <!--<artifactId>shiro-spring</artifactId>-->
             <!--<version>1.5.3</version>-->
         <!--</dependency>-->
+
+        <!-- 工作流引擎 -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
+            <version>${activiti.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

@@ -37,10 +37,17 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:mysql://192.168.99.100:3306/quick_admin
+          url: jdbc:mysql://localhost:3306/quick_admin
           username: root
           password: root
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  activiti:
+    database-schema-update: true
+    check-process-definitions: true
+    history-level: full
 
 mybatis-plus:
   configuration:

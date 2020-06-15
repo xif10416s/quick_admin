@@ -16,7 +16,12 @@
 
 #### 开发环境
 #####  后端开发环境
-
+* idea插件
+  * alibaba  java coding guidelines
+  * lombok
+  * maven helper
+  * mybaitsx ， MyBatis Log Plugin 
+* jdk 1.8 
 
 #####  前端开发环境
 
@@ -26,6 +31,11 @@
 
 ####  swagger地址
 * http://localhost:31100/admin/swagger-ui.html
+
+#### 工作流引擎activiti 接入
+* application.yml 
+  * spring.autoconfigure.exclude: org.activiti.spring.boot.SecurityAutoConfiguration
+* ActivityConfig
 
 ###### bean分层
 * entity

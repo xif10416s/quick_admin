@@ -22,6 +22,7 @@ import org.fxi.quick.sys.service.ISysUserService;
 /**
  * 授权访问处理
  * JWTRealm既要验证身份，又要做权限认证
+ * @author DELL
  */
 @Slf4j
 public class JwtRealm extends AuthorizingRealm {

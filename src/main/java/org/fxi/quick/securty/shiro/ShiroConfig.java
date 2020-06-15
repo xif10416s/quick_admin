@@ -123,8 +123,8 @@ public class ShiroConfig {
     shiroFilterFactoryBean.setFilters(filters);
 
     // 未授权界面返回JSON
-    shiroFilterFactoryBean.setUnauthorizedUrl("/sys/common/403");
-    shiroFilterFactoryBean.setLoginUrl("/sys/common/403");
+    shiroFilterFactoryBean.setUnauthorizedUrl("/sys/common/401");
+    shiroFilterFactoryBean.setLoginUrl("/sys/common/401");
     shiroFilterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition().getFilterChainMap());
     return shiroFilterFactoryBean;
   }

@@ -12,12 +12,12 @@ import org.fxi.quick.common.i18n.MessageHelper;
 @Getter
 public class BizException extends RuntimeException {
 
-    private int code;
+    private String code;
 
     private String message;
 
     public BizException(String errorCode, Object... params) {
-        this.code = Integer.valueOf(errorCode);
+        this.code = errorCode;
         this.message = MessageHelper.getMessage(errorCode, params);
     }
 }

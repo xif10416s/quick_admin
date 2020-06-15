@@ -8,6 +8,8 @@ spring:
   application: quick amdin
   profiles:
     active: dev
+  autoconfigure:
+    exclude: org.activiti.spring.boot.SecurityAutoConfiguration
 
   messages:
     basename: i18n/messages,i18n/validationmessages
