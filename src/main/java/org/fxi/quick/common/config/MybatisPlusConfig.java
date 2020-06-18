@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author initializer
  * @date 2018-12-02 12:06
  */
-@EnableTransactionManagement
+
 @Configuration
 @MapperScan(basePackages = {"org.fxi.**.mapper"})
 public class MybatisPlusConfig {

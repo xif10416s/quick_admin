@@ -1,7 +1,6 @@
 package org.fxi.quick.securty.shiro;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
@@ -24,7 +23,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
 import org.fxi.quick.securty.jwt.JwtConfig;
 import org.fxi.quick.securty.jwt.JwtFilter;
-import org.fxi.quick.sys.service.ISysUserService;
+import org.fxi.quick.module.sys.service.ISysUserService;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

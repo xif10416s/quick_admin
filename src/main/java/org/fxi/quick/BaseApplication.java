@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author initializer
@@ -26,6 +27,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication(scanBasePackages = {"org.fxi.quick"} , exclude = DruidDataSourceAutoConfigure.class)
 @EnableAspectJAutoProxy
 @EnableAsync
+@EnableTransactionManagement
 public class BaseApplication {
 
     public static void main(String[] args) {

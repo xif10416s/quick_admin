@@ -48,7 +48,8 @@
 * 异常
 * 错误码
 * TOKEN 刷新
-* DIct自动添加 自定匹配值
+* DIct自动添加 自定匹配值 -- 已完成
+* ISysUserService * SysUserServiceImpl @Transaction不生效
 。。。
 
 ###### 功能模块

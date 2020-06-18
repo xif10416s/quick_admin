@@ -34,5 +34,5 @@ public class ProcessDefModel {
   String diagramResourceName;
 
   @ApiModelProperty(value = "是否暂停：1激活，2暂停")
-  boolean suspended;
+  String suspended;
 }

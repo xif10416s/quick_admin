@@ -3,10 +3,6 @@ package org.fxi.quick.securty.shiro;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.fxi.quick.common.vo.AccountContext;
-import org.fxi.quick.securty.jwt.JwtToken;
-import org.fxi.quick.securty.jwt.JwtUtil;
-import org.fxi.quick.sys.entity.SysUser;
 
 /**
  * 密码匹配器， 说白了就是验证密码用的

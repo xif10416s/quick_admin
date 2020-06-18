@@ -16,8 +16,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.fxi.quick.securty.jwt.JwtConfig;
 import org.fxi.quick.securty.jwt.JwtToken;
 import org.fxi.quick.securty.jwt.JwtUtil;
-import org.fxi.quick.sys.entity.SysUser;
-import org.fxi.quick.sys.service.ISysUserService;
+import org.fxi.quick.module.sys.entity.SysUser;
+import org.fxi.quick.module.sys.service.ISysUserService;
 
 /**
  * 授权访问处理

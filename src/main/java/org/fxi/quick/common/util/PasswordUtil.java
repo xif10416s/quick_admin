@@ -2,6 +2,7 @@ package org.fxi.quick.common.util;
 
 import java.security.Key;
 import java.security.SecureRandom;
+import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -29,7 +30,7 @@ public class PasswordUtil {
 
 	/**
 	 * 获取加密算法中使用的盐值,解密中使用的盐值必须与加密中使用的相同才能完成操作. 盐长度必须为8字节
-	 * 
+	 *
 	 * @return byte[] 盐值
 	 * */
 	public static byte[] getSalt() throws Exception {
@@ -46,7 +47,7 @@ public class PasswordUtil {
 
 	/**
 	 * 根据PBE密码生成一把密钥
-	 * 
+	 *
 	 * @param password
 	 *            生成密钥时所使用的密码
 	 * @return Key PBE算法密钥
@@ -71,7 +72,7 @@ public class PasswordUtil {
 
 	/**
 	 * 加密明文字符串
-	 * 
+	 *
 	 * @param plaintext
 	 *            待加密的明文字符串
 	 * @param password
@@ -100,7 +101,7 @@ public class PasswordUtil {
 
 	/**
 	 * 解密密文字符串
-	 * 
+	 *
 	 * @param ciphertext
 	 *            待解密的密文字符串
 	 * @param password
@@ -131,7 +132,7 @@ public class PasswordUtil {
 
 	/**
 	 * 将字节数组转换为十六进制字符串
-	 * 
+	 *
 	 * @param src
 	 *            字节数组
 	 * @return
@@ -154,7 +155,7 @@ public class PasswordUtil {
 
 	/**
 	 * 将十六进制字符串转换为字节数组
-	 * 
+	 *
 	 * @param hexString
 	 *            十六进制字符串
 	 * @return
@@ -184,4 +185,17 @@ public class PasswordUtil {
 		System.out.println(encrypt);
 	}
 
+	/**
+	 * 随机数
+	 * @param place 定义随机数的位数
+	 */
+	public static String randomGen(int place) {
+		String base = "qwertyuioplkjhgfdsazxcvbnmQAZWSXEDCRFVTGBYHNUJMIKLOP0123456789";
+		StringBuffer sb = new StringBuffer();
+		Random rd = new Random();
+		for(int i=0;i<place;i++) {
+			sb.append(base.charAt(rd.nextInt(base.length())));
+		}
+		return sb.toString();
+	}
 }
