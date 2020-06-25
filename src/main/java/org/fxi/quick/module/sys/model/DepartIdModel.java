@@ -23,10 +23,10 @@ public class DepartIdModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // 主键ID
-    private Long key;
+    private String key;
 
     // 主键ID
-    private Long value;
+    private String value;
 
     // 部门名称
     private String title;
@@ -39,8 +39,8 @@ public class DepartIdModel implements Serializable {
      * @return
      */
     public DepartIdModel convert(SysDepartTreeModel treeModel) {
-        this.key = treeModel.getId();
-        this.value = treeModel.getId();
+        this.key = treeModel.getId().toString();
+        this.value = treeModel.getId().toString();
         this.title = treeModel.getDepartName();
         return this;
     }
@@ -51,8 +51,8 @@ public class DepartIdModel implements Serializable {
      * @return
      */
     public DepartIdModel convertByUserDepart(SysDepart sysDepart) {
-        this.key = sysDepart.getId();
-        this.value = sysDepart.getId();
+        this.key = sysDepart.getId().toString();
+        this.value = sysDepart.getId().toString();
         this.title = sysDepart.getDepartName();
         return this;
     }

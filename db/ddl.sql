@@ -192,7 +192,8 @@ INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 19);
 INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 20);
 INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 21);
 INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 22);
-
+INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 23);
+INSERT INTO `sys_role_permission`(role_id,permission_id) VALUES (1, 24);
 
 
 -- ----------------------------
@@ -291,10 +292,10 @@ CREATE TABLE `sys_depart`  (
 -- ----------------------------
 -- Records of sys_depart
 -- ----------------------------
-INSERT INTO `sys_depart` VALUES (1, -1, '总公司', NULL, NULL, 0, NULL, '1', '1', 'A02', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-26 16:36:39', 'admin', '2020-05-02 18:21:22');
-INSERT INTO `sys_depart` VALUES (2, 1, '市场部', NULL, NULL, 0, NULL, '1', '2', 'A01A03', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-20 17:15:34', 'admin', '2019-02-26 16:36:18');
-INSERT INTO `sys_depart` VALUES (3, 1, '研发部', NULL, NULL, 0, NULL, '1', '2', 'A01A05', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-21 16:14:41', 'admin', '2019-03-27 19:05:49');
-INSERT INTO `sys_depart` VALUES (4, 3, '研发经理', NULL, NULL, 0, NULL, '3', '3', 'A01A05A01', NULL, NULL, NULL, NULL, 0, 0, NULL, 'admin', '2020-05-02 15:29:09', NULL, NULL);
+INSERT INTO `sys_depart` VALUES (1, -1, '总公司', NULL, NULL, 0, NULL, '1', '1', 'A01', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-26 16:36:39', 'admin', '2020-05-02 18:21:22');
+INSERT INTO `sys_depart` VALUES (2, 1, '市场部', NULL, NULL, 0, NULL, '1', '2', 'A01A01', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-20 17:15:34', 'admin', '2019-02-26 16:36:18');
+INSERT INTO `sys_depart` VALUES (3, 1, '研发部', NULL, NULL, 0, NULL, '1', '2', 'A01A02', NULL, NULL, NULL, NULL,  0, 0, NULL, 'admin', '2019-02-21 16:14:41', 'admin', '2019-03-27 19:05:49');
+INSERT INTO `sys_depart` VALUES (4, 3, '研发经理', NULL, NULL, 0, NULL, '3', '3', 'A01A02A01', NULL, NULL, NULL, NULL, 0, 0, NULL, 'admin', '2020-05-02 15:29:09', NULL, NULL);
 
 
 -- ----------------------------
@@ -380,7 +381,7 @@ CREATE TABLE `sys_dict_item`  (
   `item_value` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '字典项值',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `sort_order` int(10) NULL DEFAULT NULL COMMENT '排序',
-  `status` tinyint(11) NULL DEFAULT NULL COMMENT '状态（1启用 0不启用）',
+  `status` tinyint(1) NULL DEFAULT NULL COMMENT '状态（1启用 0不启用）',
   `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -491,3 +492,83 @@ CREATE TABLE `sys_position`  (
 -- ----------------------------
 INSERT INTO `sys_position` VALUES (1, 'devleader', '研发部经理', '2', NULL, 'admin', '2019-10-18 11:49:03', 'admin', '2020-02-23 22:55:42', 'A01');
 INSERT INTO `sys_position` VALUES (2, '总经理', 'laozong', '5', NULL, 'admin', '2020-05-02 15:28:00', 'admin', '2020-05-02 15:28:03', '北京国炬公司');
+
+
+-- ----------------------------
+-- Table structure for sys_category
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_category`;
+CREATE TABLE `sys_category`  (
+   `id` int  auto_increment  primary key COMMENT '主键id',
+  `pid` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '父级节点',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型名称',
+  `code` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '类型编码',
+  `create_by` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建日期',
+  `update_by` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新日期',
+  `sys_org_code` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '所属部门',
+  `has_child` tinyint(1) COMMENT '是否有子节点',
+  UNIQUE INDEX `index_code`(`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_category
+-- ----------------------------
+INSERT INTO `sys_category` VALUES (1, -1, '物料树', 'B02', 'admin', '2019-10-14 18:37:59', 'admin', '2019-10-14 18:38:15', 'A01', '1');
+INSERT INTO `sys_category` VALUES (2, 1, '上衣', 'B02A01', 'admin', '2019-10-14 18:38:15', 'admin', '2019-10-14 18:38:43', 'A01', '1');
+INSERT INTO `sys_category` VALUES (3, 1, '裤子', 'B02A02', 'admin', '2019-10-14 18:38:25', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (4, 2, '秋衣', 'B02A01A01', 'admin', '2019-10-14 18:38:43', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (5, 2, '兵装', 'B02A01A02', 'admin', '2019-10-14 18:39:05', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (6, 2, '女装', 'B02A01A03', 'admin', '2019-10-14 18:39:22', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (7, -1, '电脑产品', 'A01', 'admin', '2019-10-18 11:45:18', 'admin', '2019-10-18 11:45:31', 'A01', '1');
+INSERT INTO `sys_category` VALUES (8, 7, 'thinkpad', 'A01A01', 'admin', '2019-10-18 11:45:31', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (9, 7, 'mackbook', 'A01A02', 'admin', '2019-10-18 11:45:50', NULL, NULL, 'A01', NULL);
+INSERT INTO `sys_category` VALUES (10, 7, '华为电脑', 'A01A03', 'admin', '2019-10-18 11:46:01', NULL, NULL, 'A01', NULL);
+
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `oa_leave_apply`;
+CREATE TABLE `oa_leave_apply`  (
+  id int  auto_increment  primary key COMMENT '主键id',
+  `username` varchar(32) not null Comment '用户名称',
+  `leave_type` int(11)  NOT NULL COMMENT '请假类型',
+  `leave_reason` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '原因',
+  `start_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
+  `end_time` datetime(0) NULL DEFAULT NULL COMMENT '开始时间',
+  `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `process_instance_id` varchar(45) DEFAULT NULL COMMENT '流程实例id',
+   INDEX `uniq_oa_leave_apply_userId`(`userId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
+-- Table structure for sys_quartz_job
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_quartz_job`;
+CREATE TABLE `sys_quartz_job`  (
+    `id` int  auto_increment  primary key COMMENT '主键id',
+    `create_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+    `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    `del_flag` tinyint(1) NULL DEFAULT NULL COMMENT '删除状态',
+    `update_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+    `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+    `job_class_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '任务类名',
+    `cron_expression` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'cron表达式',
+    `parameter` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '参数',
+    `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
+    `status` int(1) NULL DEFAULT NULL COMMENT '状态 0正常 -1停止',
+    `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
+    UNIQUE INDEX `uniq_job_class_name`(`job_class_name`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_quartz_job
+-- ----------------------------
+INSERT INTO `sys_quartz_job` VALUES (1, NULL, NULL, 0, 'admin', '2020-05-02 15:40:35', 'org.fxi.quick.module.quartz.job.SampleParamJob', '0/1 * * * * ?', 'scott', '带参测试 后台将每隔1秒执行输出日志', -1,NULL);
+INSERT INTO `sys_quartz_job` VALUES (2, 'admin', '2019-03-30 12:44:48', 0, 'admin', '2020-05-02 15:48:49', 'org.fxi.quick.module.quartz.job.SampleJob', '0/1 * * * * ?', NULL, NULL, -1,NULL);

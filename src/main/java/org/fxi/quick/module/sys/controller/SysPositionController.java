@@ -1,7 +1,9 @@
 package org.fxi.quick.module.sys.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +52,18 @@ public class SysPositionController {
     @PostMapping(value = "/list")
     public Result<IPage<SysPositionModel>> queryPageList(@RequestBody SysPositionSearchModel sysPositionSearchModel) {
         Result<IPage<SysPositionModel>> result = new Result<>();
-        QueryWrapper<SysPosition> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<SysPosition> queryWrapper = new QueryWrapper<SysPosition>().lambda();
+        if(StringUtils.isNotBlank(sysPositionSearchModel.getName())){
+            queryWrapper.eq(SysPosition::getName,sysPositionSearchModel.getName());
+        }
+
+        if(StringUtils.isNotBlank(sysPositionSearchModel.getCode())){
+            queryWrapper.eq(SysPosition::getCode,sysPositionSearchModel.getCode());
+        }
+
+        if(StringUtils.isNotBlank(sysPositionSearchModel.getPostRank())){
+            queryWrapper.eq(SysPosition::getPostRank,sysPositionSearchModel.getPostRank());
+        }
         Page<SysPosition> page = new Page<>(sysPositionSearchModel.getPageNo(), sysPositionSearchModel.getPageSize());
         IPage<SysPositionModel> pageList = sysPositionService.page(page, queryWrapper).convert(
             SysPositionConverter.INSTANCE::convertToModel);
@@ -68,7 +81,7 @@ public class SysPositionController {
     @ApiOperation(value = "职务表-添加", notes = "职务表-添加")
     @PostMapping(value = "/add")
     public Result<SysPosition> add(@RequestBody SysPosition sysPosition) {
-        Result<SysPosition> result = new Result<SysPosition>();
+        Result<SysPosition> result = new Result<>();
         try {
             sysPositionService.save(sysPosition);
             result.success("添加成功！");

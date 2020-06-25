@@ -10,4 +10,10 @@ public class PageSearchModel {
 
   @ApiModelProperty(value = "每页数量")
   private int pageSize = 10;
+
+  @ApiModelProperty(value = "排序字段")
+  private String column;
+
+  @ApiModelProperty(value = "顺序")
+  private String order;
 }

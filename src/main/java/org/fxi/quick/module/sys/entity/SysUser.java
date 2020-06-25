@@ -3,6 +3,8 @@ package org.fxi.quick.module.sys.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -57,7 +59,7 @@ public class SysUser extends BaseEntity implements Serializable {
      */
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private LocalDate birthday;
 
     /**
      * 性别（1：男 2：女）

@@ -21,5 +21,5 @@ public class ProcessDefSearchModel extends PageSearchModel {
   String key;
 
   @ApiModelProperty(value = "是否暂停：1激活，2暂停")
-  boolean suspended;
+  Integer suspended;
 }

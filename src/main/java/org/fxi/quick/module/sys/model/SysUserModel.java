@@ -3,11 +3,14 @@ package org.fxi.quick.module.sys.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.fxi.quick.common.annotation.Dict;
+import org.fxi.quick.common.constant.DateFormat;
 import org.fxi.quick.common.entity.BaseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,6 +36,11 @@ public class SysUserModel  implements Serializable {
     private String username;
 
     /**
+     * 登录账号
+     */
+    private String password;
+
+    /**
      * 真实姓名
      */
     private String realname;
@@ -47,7 +55,7 @@ public class SysUserModel  implements Serializable {
      */
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private LocalDate birthday;
 
     /**
      * 性别（1：男 2：女）

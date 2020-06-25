@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.fxi.quick.module.sys.entity.SysUser;
 import org.fxi.quick.module.sys.model.SysUserDepartModel;
+import org.fxi.quick.module.sys.model.SysUserSysDepartModel;
 
 /**
  * <p>
@@ -151,6 +152,16 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 */
 	List<SysUser> queryByDepIds(@Param("departIds") List<String> departIds,
       @Param("username") String username);
+
+	/**
+	 * 根据 orgCode 查询用户，包括子部门下的用户
+	 *
+	 * @param page 分页对象, xml中可以从里面进行取值,传递参数 Page 即自动分页,必须放在第一位(你可以继承Page实现自己的分页对象)
+	 * @param orgCode
+	 * @param userParams 用户查询条件，可为空
+	 * @return
+	 */
+	List<SysUserSysDepartModel> getUserByOrgCode(IPage page, @Param("orgCode") String orgCode, @Param("userParams") SysUser userParams);
 
 
 }

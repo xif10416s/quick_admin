@@ -73,17 +73,17 @@
 		select ${text} as "title",
 			   ${code} as "key",
 			   <if test="hasChildField != null and hasChildField != ''">
-			   (case when ${hasChildField} = '1' then 0 else 1 end) as isLeaf,
+			   (case when ${hasChildField} = 1 then 0 else 1 end) as isLeaf,
 			   </if>
 			   ${pidField} as parentId
 			   from ${table}
 			   where
 			   <choose>
-				   <when test="pid != null and pid != ''">
+				   <when test="pid != null and pid != -1">
 					   ${pidField} = #{pid}
 				   </when>
 				   <otherwise>
-					   (${pidField} = '' OR ${pidField} IS NULL)
+					   (${pidField} = -1 OR ${pidField} IS NULL)
 				   </otherwise>
 			   </choose>
 			   <if test="query!= null">

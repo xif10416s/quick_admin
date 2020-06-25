@@ -24,9 +24,21 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class SysPositionSearchModel extends PageSearchModel {
 
     /**
+     * 职务编码
+     */
+    @ApiModelProperty(value = "职务编码")
+    private String code;
+    /**
      * 职务名称
      */
     @ApiModelProperty(value = "职务名称")
     private String name;
+
+    /**
+     * 职级
+     */
+    @ApiModelProperty(value = "职级")
+    @Dict(dicCode = "position_rank")
+    private String postRank;
 
 }

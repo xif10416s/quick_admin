@@ -54,16 +54,16 @@ public class SysRoleController {
 
 	/**
 	  * 分页列表查询
-	 * @param role
-	 * @param pageNo
-	 * @param pageSize
-	 * @param req
+	 * @param sysRoleSearchModel
 	 * @return
 	 */
 	@PostMapping(value = "/list")
 	public Result<IPage<SysRoleModel>> queryPageList(@RequestBody SysRoleSearchModel sysRoleSearchModel) {
 		Result<IPage<SysRoleModel>> result = new Result<>();
 		QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+		if(StringUtils.isNotBlank(sysRoleSearchModel.getRoleName())){
+			queryWrapper.lambda().like(SysRole::getRoleName,sysRoleSearchModel.getRoleName());
+		}
 		Page<SysRole> page = new Page<SysRole>(sysRoleSearchModel.getPageNo(), sysRoleSearchModel.getPageSize());
 		IPage<SysRoleModel> pageList = sysRoleService.page(page, queryWrapper).convert(SysRoleConverter.INSTANCE::convertToModel);
 		result.setSuccess(true);
@@ -82,6 +82,7 @@ public class SysRoleController {
 		Result<SysRole> result = new Result<SysRole>();
 		try {
 			role.setCreateTime(LocalDateTime.now());
+			role.setDelFlag(Short.valueOf("0"));
 			sysRoleService.save(role);
 			result.success("添加成功！");
 		} catch (Exception e) {

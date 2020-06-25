@@ -2,6 +2,7 @@ package org.fxi.quick.module.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
+import org.fxi.quick.common.exception.BizException;
 import org.fxi.quick.module.sys.entity.SysPermission;
 
 /**
@@ -20,5 +21,18 @@ public interface ISysPermissionService extends IService<SysPermission> {
 	 * @param userId
 	 * @return
 	 */
-	public List<SysPermission> queryByUserId(Long userId);
+	 List<SysPermission> queryByUserId(Long userId);
+
+	/**
+	 *
+	 * @param sysPermission
+	 * @throws BizException
+	 */
+	 void addPermission(SysPermission sysPermission) throws BizException;
+
+	 void editPermission(SysPermission sysPermission) throws BizException;
+
+	/**真实删除*/
+	void deletePermission(Long id) throws BizException;
+
 }

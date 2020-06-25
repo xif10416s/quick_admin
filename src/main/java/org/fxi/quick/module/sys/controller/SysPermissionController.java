@@ -4,18 +4,31 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.fxi.quick.common.api.vo.Result;
 import org.fxi.quick.common.constant.CommonConstant;
 import org.fxi.quick.common.util.AccountContextUtil;
 import org.fxi.quick.module.sys.entity.SysPermission;
+import org.fxi.quick.module.sys.entity.SysRolePermission;
+import org.fxi.quick.module.sys.model.RolePermissionSaveModel;
+import org.fxi.quick.module.sys.model.SysPermissionTree;
+import org.fxi.quick.module.sys.model.TreeModel;
 import org.fxi.quick.module.sys.service.ISysPermissionService;
+import org.fxi.quick.module.sys.service.ISysRolePermissionService;
 import org.fxi.quick.module.sys.util.PermissionDataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,6 +47,135 @@ public class SysPermissionController {
 	@Autowired
 	private ISysPermissionService sysPermissionService;
 
+  @Autowired
+  private ISysRolePermissionService sysRolePermissionService;
+
+
+  /**
+   * 加载数据节点
+   *
+   * @return
+   */
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  public Result<List<SysPermissionTree>> list() {
+    long start = System.currentTimeMillis();
+    Result<List<SysPermissionTree>> result = new Result<>();
+    try {
+      LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+      query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+      query.orderByAsc(SysPermission::getSortNo);
+      List<SysPermission> list = sysPermissionService.list(query);
+      List<SysPermissionTree> treeList = new ArrayList<>();
+      getTreeList(treeList, list, null);
+      result.setResult(treeList);
+      result.setSuccess(true);
+      log.info("======获取全部菜单数据=====耗时:" + (System.currentTimeMillis() - start) + "毫秒");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return result;
+  }
+
+  private void getTreeList(List<SysPermissionTree> treeList, List<SysPermission> metaList, SysPermissionTree temp) {
+    for (SysPermission permission : metaList) {
+      Long tempPid = permission.getParentId();
+      SysPermissionTree tree = new SysPermissionTree(permission);
+      if (temp == null && (tempPid == null || tempPid == -1L)) {
+        treeList.add(tree);
+        if (!tree.isLeaf()) {
+          getTreeList(treeList, metaList, tree);
+        }
+      } else if (temp != null && tempPid != null && tempPid.equals(temp.getId())) {
+        temp.getChildren().add(tree);
+        if (!tree.isLeaf()) {
+          getTreeList(treeList, metaList, tree);
+        }
+      }
+    }
+  }
+
+  /**
+   * 添加菜单
+   * @param permission
+   * @return
+   */
+  //@RequiresRoles({"admin"})
+  @RequestMapping(value = "/add", method = RequestMethod.POST)
+  public Result<SysPermission> add(@RequestBody SysPermission permission) {
+    Result<SysPermission> result = new Result<SysPermission>();
+    try {
+      permission = PermissionDataUtil.intelligentProcessData(permission);
+      sysPermissionService.addPermission(permission);
+      result.success("添加成功！");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      result.error500("操作失败");
+    }
+    return result;
+  }
+
+  /**
+   * 编辑菜单
+   * @param permission
+   * @return
+   */
+  //@RequiresRoles({"admin"})
+  @RequestMapping(value = "/edit", method = { RequestMethod.PUT, RequestMethod.POST })
+  public Result<SysPermission> edit(@RequestBody SysPermission permission) {
+    Result<SysPermission> result = new Result<>();
+    try {
+      permission = PermissionDataUtil.intelligentProcessData(permission);
+      sysPermissionService.editPermission(permission);
+      result.success("修改成功！");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      result.error500("操作失败");
+    }
+    return result;
+  }
+
+  /**
+   * 删除菜单
+   * @param id
+   * @return
+   */
+  //@RequiresRoles({"admin"})
+  @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+  public Result<SysPermission> delete(@RequestParam(name = "id", required = true) Long id) {
+    Result<SysPermission> result = new Result<>();
+    try {
+      sysPermissionService.deletePermission(id);
+      result.success("删除成功!");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      result.error500(e.getMessage());
+    }
+    return result;
+  }
+
+  /**
+   * 批量删除菜单
+   * @param ids
+   * @return
+   */
+  //@RequiresRoles({"admin"})
+  @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+  public Result<SysPermission> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+    Result<SysPermission> result = new Result<>();
+    try {
+      String[] arr = ids.split(",");
+      for (String id : arr) {
+        if (StringUtils.isNotEmpty(id)) {
+          sysPermissionService.deletePermission(Long.valueOf(id));
+        }
+      }
+      result.success("删除成功!");
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      result.error500("删除成功!");
+    }
+    return result;
+  }
 
 	/**
 	 * 查询用户拥有的菜单权限和按钮权限（根据TOKEN）
@@ -264,6 +406,99 @@ public class SysPermissionController {
       return url;
     } else {
       return null;
+    }
+  }
+
+  /**
+   * 查询角色授权
+   *
+   * @return
+   */
+  @RequestMapping(value = "/queryRolePermission", method = RequestMethod.GET)
+  public Result<List<Long>> queryRolePermission(@RequestParam(name = "roleId", required = true) Long roleId) {
+    Result<List<Long>> result = new Result<>();
+    try {
+      List<SysRolePermission> list = sysRolePermissionService.list(new QueryWrapper<SysRolePermission>().lambda().eq(SysRolePermission::getRoleId, roleId));
+      result.setResult(list.stream().map(SysRolePermission -> SysRolePermission.getPermissionId()).collect(
+          Collectors.toList()));
+      result.setSuccess(true);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return result;
+  }
+
+  /**
+   * 保存角色授权
+   *
+   * @return
+   */
+  @PostMapping(value = "/saveRolePermission")
+  public Result<String> saveRolePermission(@RequestBody RolePermissionSaveModel rolePermissionSaveModel) {
+    long start = System.currentTimeMillis();
+    Result<String> result = new Result<>();
+    try {
+      Long roleId = rolePermissionSaveModel.getRoleId();
+      String permissionIds = rolePermissionSaveModel.getPermissionIds();
+      String lastPermissionIds = rolePermissionSaveModel.getLastpermissionIds();
+      this.sysRolePermissionService.saveRolePermission(roleId, permissionIds, lastPermissionIds);
+      result.success("保存成功！");
+      log.info("======角色授权成功=====耗时:" + (System.currentTimeMillis() - start) + "毫秒");
+    } catch (Exception e) {
+      result.error500("授权失败！");
+      log.error(e.getMessage(), e);
+    }
+    return result;
+  }
+
+  /**
+   * 获取全部的权限树
+   *
+   * @return
+   */
+  @RequestMapping(value = "/queryTreeList", method = RequestMethod.GET)
+  public Result<Map<String, Object>> queryTreeList() {
+    Result<Map<String, Object>> result = new Result<>();
+    // 全部权限ids
+    List<Long> ids = new ArrayList<>();
+    try {
+      LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+      query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+      query.orderByAsc(SysPermission::getSortNo);
+      List<SysPermission> list = sysPermissionService.list(query);
+      for (SysPermission sysPer : list) {
+        ids.add(sysPer.getId());
+      }
+      List<TreeModel> treeList = new ArrayList<>();
+      getTreeModelList(treeList, list, null);
+
+      Map<String, Object> resMap = new HashMap<String, Object>();
+      resMap.put("treeList", treeList); // 全部树节点数据
+      resMap.put("ids", ids);// 全部树ids
+      result.setResult(resMap);
+      result.setSuccess(true);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return result;
+  }
+
+  private void getTreeModelList(List<TreeModel> treeList, List<SysPermission> metaList, TreeModel temp) {
+    for (SysPermission permission : metaList) {
+      Long tempPid = permission.getParentId();
+      TreeModel tree = new TreeModel(permission);
+      if (temp == null && (tempPid == null ||  tempPid == -1)) {
+        treeList.add(tree);
+        if (!tree.getIsLeaf()) {
+          getTreeModelList(treeList, metaList, tree);
+        }
+      } else if (temp != null && tempPid != null && tempPid.equals(temp.getKey())) {
+        temp.getChildren().add(tree);
+        if (!tree.getIsLeaf()) {
+          getTreeModelList(treeList, metaList, tree);
+        }
+      }
+
     }
   }
 

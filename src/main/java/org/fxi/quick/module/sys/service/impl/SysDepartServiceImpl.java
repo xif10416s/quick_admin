@@ -17,6 +17,7 @@ import org.fxi.quick.module.sys.entity.SysDepart;
 import org.fxi.quick.module.sys.entity.SysUserDepart;
 import org.fxi.quick.module.sys.mapper.SysDepartMapper;
 import org.fxi.quick.module.sys.mapper.SysUserDepartMapper;
+import org.fxi.quick.module.sys.rule.OrgCodeRule;
 import org.fxi.quick.module.sys.service.ISysDepartService;
 import org.fxi.quick.module.sys.util.FindsDepartsChildrenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	@Autowired
 	private SysUserDepartMapper userDepartMapper;
 
+	@Autowired
+	private OrgCodeRule orgCodeRule;
 
 	@Override
 	public List<SysDepartTreeModel> queryMyDeptTreeList(String departIds) {
@@ -106,11 +109,12 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			//update-begin--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
 			JSONObject formData = new JSONObject();
 			formData.put("parentId",parentId);
+			String[] codeArray = (String[]) orgCodeRule.execute(formData);
 			//update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
       //TODO 编码规则
-//			sysDepart.setOrgCode(codeArray[0]);
-//			String orgType = codeArray[1];
-//			sysDepart.setOrgType(String.valueOf(orgType));
+			sysDepart.setOrgCode(codeArray[0]);
+			String orgType = codeArray[1];
+			sysDepart.setOrgType(String.valueOf(orgType));
 			sysDepart.setCreateTime(LocalDateTime.now());
 			sysDepart.setDelFlag(CommonConstant.DEL_FLAG_0);
 			this.save(sysDepart);

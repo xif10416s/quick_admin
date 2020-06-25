@@ -23,12 +23,16 @@ import org.fxi.quick.common.constant.CommonSendStatus;
 import org.fxi.quick.common.constant.WebsocketConst;
 import org.fxi.quick.common.util.AccountContextUtil;
 import org.fxi.quick.message.websocket.WebSocket;
+import org.fxi.quick.module.sys.convert.SysAnnouncementConverter;
 import org.fxi.quick.module.sys.entity.SysAnnouncement;
 import org.fxi.quick.module.sys.entity.SysAnnouncementSend;
 import org.fxi.quick.module.sys.entity.SysUser;
+import org.fxi.quick.module.sys.model.SysAnnouncementModel;
+import org.fxi.quick.module.sys.model.SysAnnouncementSearchModel;
 import org.fxi.quick.module.sys.service.ISysAnnouncementSendService;
 import org.fxi.quick.module.sys.service.ISysAnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,26 +61,29 @@ public class SysAnnouncementController {
   /**
    * 分页列表查询
    */
-  @RequestMapping(value = "/list", method = RequestMethod.GET)
-  public Result<IPage<SysAnnouncement>> queryPageList(SysAnnouncement sysAnnouncement,
-      @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-      HttpServletRequest req) {
-    Result<IPage<SysAnnouncement>> result = new Result<IPage<SysAnnouncement>>();
-    sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0);
-    QueryWrapper<SysAnnouncement> queryWrapper = new QueryWrapper<SysAnnouncement>(sysAnnouncement);
-    Page<SysAnnouncement> page = new Page<SysAnnouncement>(pageNo, pageSize);
+  @PostMapping(value = "/list")
+  public Result<IPage<SysAnnouncementModel>> queryPageList(@RequestBody SysAnnouncementSearchModel sysAnnouncementSearchModel) {
+    Result<IPage<SysAnnouncementModel>> result = new Result<>();
+    LambdaQueryWrapper<SysAnnouncement> queryWrapper = new QueryWrapper<SysAnnouncement>().lambda();
+
+    if(StringUtils.isNotBlank(sysAnnouncementSearchModel.getTitle())){
+      queryWrapper.like(SysAnnouncement::getTitle,sysAnnouncementSearchModel.getTitle());
+    }
+
+    Page<SysAnnouncement> page = new Page<SysAnnouncement>(
+        sysAnnouncementSearchModel.getPageNo(), sysAnnouncementSearchModel.getPageSize());
     //排序逻辑 处理
-    String column = req.getParameter("column");
-    String order = req.getParameter("order");
+    String column = sysAnnouncementSearchModel.getColumn();
+    String order = sysAnnouncementSearchModel.getOrder();
     if (StringUtils.isNotBlank(column) && StringUtils.isBlank(order)) {
       if ("asc".equals(order)) {
-        queryWrapper.orderByAsc(StringUtils.camelToUnderline(column));
+        queryWrapper.last("order by " + StringUtils.camelToUnderline(column) +" asc");
       } else {
-        queryWrapper.orderByDesc(StringUtils.camelToUnderline(column));
+        queryWrapper.last("order by " + StringUtils.camelToUnderline(column) +" desc");
       }
     }
-    IPage<SysAnnouncement> pageList = sysAnnouncementService.page(page, queryWrapper);
+    IPage<SysAnnouncementModel> pageList = sysAnnouncementService.page(page, queryWrapper).convert(
+        SysAnnouncementConverter.INSTANCE::convertToModel);
     log.info("查询当前页：" + pageList.getCurrent());
     log.info("查询当前页数量：" + pageList.getSize());
     log.info("查询结果数量：" + pageList.getRecords().size());
@@ -189,6 +196,7 @@ public class SysAnnouncementController {
       @RequestParam(name = "id", required = true) String id, HttpServletRequest request) {
     Result<SysAnnouncement> result = new Result<SysAnnouncement>();
     SysAnnouncement sysAnnouncement = sysAnnouncementService.getById(id);
+    SysUser sysUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
     if (sysAnnouncement == null) {
       result.error500("未找到对应实体");
     } else {
@@ -210,7 +218,19 @@ public class SysAnnouncementController {
           String userId = sysAnnouncement.getUserIds();
           String[] userIds = userId.substring(0, (userId.length() - 1)).split(",");
           Long anntId = sysAnnouncement.getId();
-          Date refDate = new Date();
+//          Date refDate = new Date();
+          if (userIds.length > 0) {
+            for (int i = 0; i < userIds.length; i++) {
+              SysAnnouncementSend announcementSend = new SysAnnouncementSend();
+              announcementSend.setAnntId(anntId);
+              announcementSend.setUserId(Long.valueOf(userIds[i]));
+              announcementSend.setReadFlag(CommonConstant.NO_READ_FLAG);
+              announcementSend.setCreateTime(LocalDateTime.now());
+              announcementSend.setUpdateTime(LocalDateTime.now());
+              announcementSend.setCreateBy(sysUser.getUsername());
+              sysAnnouncementSendService.save(announcementSend);
+            }
+          }
           JSONObject obj = new JSONObject();
           obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_USER);
           obj.put(WebsocketConst.MSG_ID, sysAnnouncement.getId());
@@ -257,7 +277,7 @@ public class SysAnnouncementController {
     Collection<String> anntIds = sysAnnouncementSendService.queryByUserId(userId);
     LambdaQueryWrapper<SysAnnouncement> querySaWrapper = new LambdaQueryWrapper<SysAnnouncement>();
     querySaWrapper.eq(SysAnnouncement::getMsgType, CommonConstant.MSG_TYPE_ALL); // 全部人员
-    querySaWrapper.eq(SysAnnouncement::getDelFlag, CommonConstant.DEL_FLAG_0.toString());  // 未删除
+    querySaWrapper.eq(SysAnnouncement::getDelFlag, CommonConstant.DEL_FLAG_0);  // 未删除
     querySaWrapper.eq(SysAnnouncement::getSendStatus, CommonConstant.HAS_SEND); //已发布
     querySaWrapper.ge(SysAnnouncement::getEndTime, sysUser.getCreateTime()); //新注册用户不看结束通知
     if (anntIds != null && anntIds.size() > 0) {

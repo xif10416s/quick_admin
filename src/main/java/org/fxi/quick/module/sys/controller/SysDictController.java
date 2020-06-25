@@ -1,6 +1,7 @@
 package org.fxi.quick.module.sys.controller;
 
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -63,7 +64,15 @@ public class SysDictController {
 	@PostMapping(value = "/list")
 	public Result<IPage<SysDictModel>> queryPageList(@RequestBody SysDictModel sysDictModel, HttpServletRequest req) {
 		Result<IPage<SysDictModel>> result = new Result<IPage<SysDictModel>>();
-		QueryWrapper<SysDict> queryWrapper =  new QueryWrapper<>();//TODO
+		LambdaQueryWrapper<SysDict> queryWrapper = new QueryWrapper<SysDict>().lambda();
+		if(StringUtils.isNotBlank(sysDictModel.getDictName())){
+			queryWrapper.eq(SysDict::getDictName,sysDictModel.getDictName());
+		}
+
+		if(StringUtils.isNotBlank(sysDictModel.getDictCode())){
+			queryWrapper.eq(SysDict::getDictCode,sysDictModel.getDictCode());
+		}
+
 		Page<SysDict> page = new Page<SysDict>(sysDictModel.getPageNo(), sysDictModel.getPageSize());
 		IPage<SysDictModel> pageList = sysDictService.page(page, queryWrapper).convert(
 				SysDictConverter.INSTANCE::convertToModel);
@@ -273,9 +282,9 @@ public class SysDictController {
       HttpServletRequest request) {
 		Result<List<TreeSelectModel>> result = new Result<List<TreeSelectModel>>();
 		Map<String, String> query = null;
-//		if(StringUtils.isNotBlank(condition)) {
-//			query = JSON.parseObject(condition, Map.class);
-//		}
+		if(StringUtils.isNotBlank(condition)) {
+			query = JSONUtil.parseObj((condition)).toBean(Map.class);
+		}
 		// SQL注入漏洞 sign签名校验(表名,label字段,val字段,条件)
 		String dictCode = tbname+","+text+","+code+","+condition;
 		List<TreeSelectModel> ls = sysDictService.queryTreeList(query,tbname, text, code, pidField, pid,hasChildField);

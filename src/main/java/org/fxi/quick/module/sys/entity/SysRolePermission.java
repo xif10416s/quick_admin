@@ -19,20 +19,24 @@ import org.fxi.quick.common.entity.BaseEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SysRolePermission extends BaseEntity implements Serializable {
+public class SysRolePermission implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
+  /**
+   * 物理主键
+   */
+    @TableId(type = IdType.AUTO)
+    private Long id;
     /**
      * 角色id
      */
-    private String roleId;
+    private Long roleId;
 
     /**
      * 权限id
      */
-    private String permissionId;
+    private Long permissionId;
 
     /**
      * 数据权限
@@ -42,7 +46,7 @@ public class SysRolePermission extends BaseEntity implements Serializable {
     public SysRolePermission() {
    	}
 
-   	public SysRolePermission(String roleId, String permissionId) {
+   	public SysRolePermission(Long roleId, Long permissionId) {
    		this.roleId = roleId;
    		this.permissionId = permissionId;
    	}

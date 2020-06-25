@@ -27,6 +27,7 @@ import org.fxi.quick.module.sys.mapper.SysUserRoleMapper;
 import org.fxi.quick.module.sys.model.SysUserDepartModel;
 import org.fxi.quick.module.sys.model.SysUserModel;
 import org.fxi.quick.module.sys.model.SysUserSearchModel;
+import org.fxi.quick.module.sys.model.SysUserSysDepartModel;
 import org.fxi.quick.module.sys.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -187,5 +188,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         .convert(SysUserConverter.INSTANCE::convertToModel);
   }
 
+  @Override
+  public void updateUserDepart(String username, String orgCode) {
+    baseMapper.updateUserDepart(username, orgCode);
+  }
 
+  @Override
+  public SysUser getUserByName(String username) {
+    return baseMapper.getUserByName(username);
+  }
+
+  @Override
+  public IPage<SysUser> getUserByDepIds(Page<SysUser> page, List<String> departIds, String username) {
+    return baseMapper.getUserByDepIds(page, departIds,username);
+  }
+
+  @Override
+  public IPage<SysUserSysDepartModel> queryUserByOrgCode(String orgCode, SysUser userParams, IPage page) {
+    List<SysUserSysDepartModel> list = baseMapper.getUserByOrgCode(page, orgCode, userParams);
+    Integer total = baseMapper.getUserByOrgCodeTotal(orgCode, userParams);
+
+    IPage<SysUserSysDepartModel> result = new Page<>(page.getCurrent(), page.getSize(), total);
+    result.setRecords(list);
+
+    return result;
+  }
 }

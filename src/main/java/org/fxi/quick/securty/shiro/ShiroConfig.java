@@ -134,9 +134,20 @@ public class ShiroConfig {
     DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
     chainDefinition.addPathDefinition("/sys/login", "anon");  //login不做认证
     chainDefinition.addPathDefinition("/sys/logout", "anon"); //
+    chainDefinition.addPathDefinition("/sys/user/checkOnlyUser", "anon"); //
     chainDefinition.addPathDefinition("/sys/common/401", "anon");
+    chainDefinition.addPathDefinition("/sys/randomImage/**", "anon");
+    chainDefinition.addPathDefinition("/thirdLogin/**", "anon");
+    chainDefinition.addPathDefinition("/sys/sms", "anon");
+    chainDefinition.addPathDefinition("/sys/user/register", "anon");
+    chainDefinition.addPathDefinition("/auth/2step-code", "anon");
+    chainDefinition.addPathDefinition("/sys/checkCaptcha", "anon");
+    chainDefinition.addPathDefinition("/activiti/showResource/**", "anon");
+    chainDefinition.addPathDefinition("/activiti/traceProcess/**", "anon");
 
 
+    //websocket排除
+    chainDefinition.addPathDefinition("/websocket/**", "anon");
     //性能监控
     chainDefinition.addPathDefinition("/actuator/metrics/**", "anon");
     chainDefinition.addPathDefinition("/actuator/httptrace/**", "anon");

@@ -145,4 +145,21 @@
 			and username != #{username}
 		</if>
 	</select>
+
+	<!-- 根据 orgCode 查询用户，包括子部门下的用户 -->
+	<select id="getUserByOrgCode" resultType="org.fxi.quick.module.sys.model.SysUserSysDepartModel">
+		SELECT
+		sys_user.id AS id,
+		sys_user.realname AS realname,
+		sys_user.work_no AS workNo,
+		sys_user.post AS post,
+		sys_user.telephone AS telephone,
+		sys_user.email AS email,
+		sys_user.phone AS phone,
+		sys_depart.id AS departId,
+		sys_depart.depart_name AS departName
+		<include refid="getUserByOrgCodeFromSql"/>
+		ORDER BY
+		sys_depart.org_code ASC
+	</select>
 </mapper>

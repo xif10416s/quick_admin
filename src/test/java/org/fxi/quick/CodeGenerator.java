@@ -44,7 +44,7 @@ public class CodeGenerator {
 
         // 全局配置，注意路径添加了模块路径
         GlobalConfig gc = new GlobalConfig();
-        String projectPath = System.getProperty("user.dir") + "/quick_admin";
+        String projectPath = System.getProperty("user.dir") + "/.";
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("initializer");
         gc.setOpen(false);
@@ -54,7 +54,7 @@ public class CodeGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setUrl("jdbc:mysql://localhost:3306/quick_admin");
-        dsc.setDriverName("org.mysql.Driver");
+        dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("root");
         mpg.setDataSource(dsc);
@@ -89,10 +89,10 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setSuperEntityClass("org.fxi.quick.common.entity.BaseEntity");
+//        strategy.setSuperEntityClass("org.fxi.quick.common.entity.BaseEntity");
         strategy.setEntityLombokModel(true);
         strategy.setInclude(scanner("表名"));
-        strategy.setSuperEntityColumns("id", "create_time", "update_time", "del_flg", "delete_time");
+//        strategy.setSuperEntityColumns("id", "create_time", "update_time", "del_flg", "delete_time");
         strategy.setTablePrefix(pc.getModuleName() + "_");
 
         // version和delete已经定义在BaseEntity中了

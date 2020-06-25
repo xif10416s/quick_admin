@@ -9,6 +9,7 @@ import java.util.Set;
 import org.fxi.quick.module.sys.model.SysUserModel;
 import org.fxi.quick.module.sys.model.SysUserSearchModel;
 import org.fxi.quick.module.sys.entity.SysUser;
+import org.fxi.quick.module.sys.model.SysUserSysDepartModel;
 
 /**
  * <p>
@@ -94,5 +95,38 @@ public interface ISysUserService extends IService<SysUser> {
 	 * @return
 	 */
 	 IPage<SysUserModel> getUserByRoleId(Page<SysUser> page,Long roleId, String username);
+
+	/**
+	 * 根据用户名设置部门ID
+	 * @param username
+	 * @param orgCode
+	 */
+	void updateUserDepart(String username,String orgCode);
+
+	/**
+	 *
+	 * @param username
+	 * @return
+	 */
+	SysUser getUserByName(String username);
+
+	/**
+	 * 根据部门Ids查询
+	 * @param
+	 * @return
+	 */
+	 IPage<SysUser> getUserByDepIds(Page<SysUser> page, List<String> departIds, String username);
+
+
+	/**
+	 * 根据 orgCode 查询用户，包括子部门下的用户
+	 *
+	 * @param orgCode
+	 * @param userParams 用户查询条件，可为空
+	 * @param page 分页参数
+	 * @return
+	 */
+	IPage<SysUserSysDepartModel> queryUserByOrgCode(String orgCode, SysUser userParams, IPage page);
+
 
 }

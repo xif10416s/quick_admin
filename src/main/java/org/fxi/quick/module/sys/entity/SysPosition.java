@@ -1,5 +1,7 @@
 package org.fxi.quick.module.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -28,6 +30,7 @@ public class SysPosition {
      * id
      */
     @ApiModelProperty(value = "id")
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 职务编码

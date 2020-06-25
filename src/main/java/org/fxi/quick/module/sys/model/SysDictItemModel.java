@@ -28,12 +28,12 @@ public class SysDictItemModel extends PageSearchModel {
     /**
      * id
      */
-    private int id;
+    private Long id;
 
     /**
      * 字典id
      */
-    private Integer dictId;
+    private Long dictId;
 
     /**
      * 字典项文本

@@ -1,13 +1,14 @@
 package org.fxi.quick.module.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.fxi.quick.common.api.vo.Result;
 import org.fxi.quick.common.constant.CacheConstant;
@@ -17,6 +18,7 @@ import org.fxi.quick.module.sys.model.SysDictItemModel;
 import org.fxi.quick.module.sys.service.ISysDictItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,17 +45,26 @@ public class SysDictItemController {
 	/**
 	 * @功能：查询字典数据
 	 * @param sysDictItem
-	 * @param pageNo
-	 * @param pageSize
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result<IPage<SysDictItemModel>> queryPageList(@RequestBody  SysDictItemModel sysDictItem,
-      HttpServletRequest req) {
+	@PostMapping(value = "/list")
+	public Result<IPage<SysDictItemModel>> queryPageList(@RequestBody  SysDictItemModel sysDictItem) {
 		Result<IPage<SysDictItemModel>> result = new Result<IPage<SysDictItemModel>>();
-		QueryWrapper<SysDictItem> queryWrapper = new QueryWrapper<>();//TODO
-		queryWrapper.orderByAsc("sort_order");
+		LambdaQueryWrapper<SysDictItem> queryWrapper = new QueryWrapper<SysDictItem>().lambda();
+		if(sysDictItem.getDictId() != null){
+			queryWrapper.eq(SysDictItem::getDictId,sysDictItem.getDictId());
+		}
+
+		if(StringUtils.isNotBlank(sysDictItem.getItemValue())){
+			queryWrapper.eq(SysDictItem::getItemValue,sysDictItem.getItemValue());
+		}
+
+		if(StringUtils.isNotBlank(sysDictItem.getItemText())){
+			queryWrapper.eq(SysDictItem::getItemText,sysDictItem.getItemText());
+		}
+
+		queryWrapper.last("order by sort_order desc");
 		Page<SysDictItem> page = new Page<SysDictItem>(sysDictItem.getPageNo(), sysDictItem.getPageSize());
 		IPage<SysDictItemModel> pageList = sysDictItemService.page(page, queryWrapper).convert(
 				SysDictItemConverter.INSTANCE::convertToModel);

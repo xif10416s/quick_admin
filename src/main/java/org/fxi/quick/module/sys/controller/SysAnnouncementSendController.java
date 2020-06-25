@@ -188,7 +188,7 @@ public class SysAnnouncementSendController {
    LambdaUpdateWrapper<SysAnnouncementSend> updateWrapper = new UpdateWrapper().lambda();
    updateWrapper.set(SysAnnouncementSend::getReadFlag, CommonConstant.HAS_READ_FLAG);
    updateWrapper.set(SysAnnouncementSend::getReadTime, new Date());
-   updateWrapper.last("where annt_id ="+anntId+" and user_id ="+userId+"");
+   updateWrapper.last("and annt_id ="+anntId+" and user_id ="+userId+"");
    SysAnnouncementSend announcementSend = new SysAnnouncementSend();
    sysAnnouncementSendService.update(announcementSend, updateWrapper);
    result.setSuccess(true);

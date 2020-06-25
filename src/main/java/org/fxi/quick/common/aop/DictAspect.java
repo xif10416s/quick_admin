@@ -101,6 +101,10 @@ public class DictAspect {
                             item.put(field.getName() + CommonConstant.DICT_TEXT_SUFFIX, textValue);
                         }
                         //date类型默认转换string格式化日期
+                        if (field.getType().getName().equals("java.time.LocalDate")&&item.get(field.getName())!=null){
+                            SimpleDateFormat aDate=new SimpleDateFormat("yyyy-MM-dd");
+                            item.put(field.getName(), aDate.format(new Date((Long) item.get(field.getName()))));
+                        }
                         if (field.getType().getName().equals("java.time.LocalDateTime")&&item.get(field.getName())!=null){
                             SimpleDateFormat aDate=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             item.put(field.getName(), aDate.format(new Date((Long) item.get(field.getName()))));

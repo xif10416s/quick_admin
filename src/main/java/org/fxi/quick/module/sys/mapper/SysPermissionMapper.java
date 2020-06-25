@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.fxi.quick.module.sys.entity.SysPermission;
 
 /**
@@ -27,6 +28,13 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 	 */
 	@Select("select p.* from sys_user_role r join sys_role_permission rp on r.role_id = rp.role_id join sys_permission p on p.id = rp.permission_id where r.user_id = #{userId} and p.del_flag = 0  ")
 	public List<SysPermission> queryByUserId(@Param("userId") Long userId);
+
+
+	/**
+	 *   修改菜单状态字段： 是否子节点
+	 */
+	@Update("update sys_permission set leaf=#{leaf} where id = #{id}")
+	int setMenuLeaf(@Param("id") Long id,@Param("leaf") int leaf);
 
 
 }
