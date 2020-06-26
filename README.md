@@ -29,14 +29,14 @@
 ######  权限配置
 *  权限配置有url的用url , 没有的在perms中指定
 
-####  swagger地址
+######  swagger地址
 * http://localhost:31100/admin/swagger-ui.html
 
-#### 工作流引擎activiti 接入
+###### 工作流引擎activiti 接入
 * application.yml 
   * spring.autoconfigure.exclude: org.activiti.spring.boot.SecurityAutoConfiguration
 * ActivityConfig
-#####  流程图 定义
+######  流程图 定义
 * 负责人指定相关
   * <startEvent activiti:initiator="applyUserId">
     * 配合identityservice.setAuthenticatedUserId绑定，不用${}指定
@@ -70,9 +70,9 @@
 * 异常
 * 错误码
 * TOKEN 刷新
-* DIct自动添加 自定匹配值 -- 已完成
 * ISysUserService * SysUserServiceImpl @Transaction不生效
-。。。
+* 工作流完善
+
 
 ###### 功能模块
 * 系统管理  -- 清理无用代码

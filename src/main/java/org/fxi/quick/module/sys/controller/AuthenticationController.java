@@ -119,7 +119,7 @@ public class AuthenticationController {
   public Result<?> handler401(HttpServletRequest request) {
     Object msg = request.getSession().getAttribute("msg");
     request.getSession().removeAttribute("msg");
-    return Result.error(CommonConstant.RESPONSE_CODE_401, msg == null ? "未登录" : msg
+    return Result.error(CommonConstant.RESPONSE_CODE_401, msg == null ? "未登录或登录已经过期！" : msg
         .toString());
   }
 

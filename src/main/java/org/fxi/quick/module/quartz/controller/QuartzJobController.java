@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.fxi.quick.common.api.vo.Result;
 import org.fxi.quick.common.constant.CommonConstant;
 import org.fxi.quick.common.exception.BizException;
+import org.fxi.quick.common.i18n.MessageHelper;
 import org.fxi.quick.module.quartz.entity.QuartzJob;
 import org.fxi.quick.module.quartz.model.QuartzJobSearchModel;
 import org.fxi.quick.module.quartz.service.IQuartzJobService;
@@ -88,9 +91,9 @@ public class QuartzJobController {
 			quartzJobService.editAndScheduleJob(quartzJob);
 		} catch (SchedulerException e) {
 			log.error(e.getMessage(),e);
-			return Result.error("更新定时任务失败!");
+			return Result.error(MessageHelper.getMessage("A0507",null));
 		}
-	    return Result.ok("更新定时任务成功!");
+	    return Result.ok();
 	}
 
 	/**
@@ -100,11 +103,14 @@ public class QuartzJobController {
 	 * @return
 	 */
 	//@RequiresRoles({"admin"})
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "id", value = "任务id", required = true, dataType = "String")
+	})
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
 		QuartzJob quartzJob = quartzJobService.getById(id);
 		if (quartzJob == null) {
-			return Result.error("未找到对应实体");
+			return Result.error(MessageHelper.getMessage("A0508",new String[]{id}));
 		}
 		quartzJobService.deleteAndStopJob(quartzJob);
         return Result.ok("删除成功!");
@@ -118,10 +124,13 @@ public class QuartzJobController {
 	 * @return
 	 */
 	//@RequiresRoles({"admin"})
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "ids", value = "任务id列表", required = true, dataType = "String")
+	})
 	@RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
 	public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
 		if (ids == null || "".equals(ids.trim())) {
-			return Result.error("参数不识别！");
+			return Result.error(MessageHelper.getMessage("A0400",null));
 		}
 		for (String id : Arrays.asList(ids.split(","))) {
 			QuartzJob job = quartzJobService.getById(id);
@@ -138,6 +147,9 @@ public class QuartzJobController {
 	 */
 	//@RequiresRoles({"admin"})
 	@GetMapping(value = "/pause")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "jobClassName", value = "任务类名", required = true, dataType = "String")
+	})
 	@ApiOperation(value = "暂停定时任务")
 	public Result<Object> pauseJob(@RequestParam(name = "jobClassName", required = true) String jobClassName) {
 		QuartzJob job = null;
@@ -164,6 +176,9 @@ public class QuartzJobController {
 	//@RequiresRoles({"admin"})
 	@GetMapping(value = "/resume")
 	@ApiOperation(value = "恢复定时任务")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "jobClassName", value = "任务类名", required = true, dataType = "String")
+	})
 	public Result<Object> resumeJob(@RequestParam(name = "jobClassName", required = true) String jobClassName) {
 		QuartzJob job = quartzJobService.getOne(new LambdaQueryWrapper<QuartzJob>().eq(QuartzJob::getJobClassName, jobClassName));
 		if (job == null) {
@@ -180,6 +195,9 @@ public class QuartzJobController {
 	 * @param id
 	 * @return
 	 */
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType="query", name = "id", value = "任务id", required = true, dataType = "String")
+	})
 	@RequestMapping(value = "/queryById", method = RequestMethod.GET)
 	public Result<?> queryById(@RequestParam(name = "id", required = true) String id) {
 		QuartzJob quartzJob = quartzJobService.getById(id);

@@ -3,6 +3,8 @@ package org.fxi.quick.module.oa.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -64,6 +66,9 @@ public class LeaveApplyController {
 
   @ApiOperation(value = "获取请假详情", produces = "application/json")
   @GetMapping(value = "/getLeaveApplyModel")
+  @ApiImplicitParams({
+      @ApiImplicitParam(paramType="query", name = "processInstanceId", value = "流程实例Id", required = true, dataType = "String")
+  })
   public Result<LeaveApplyModel> getLeaveApplyModel(@RequestParam(value = "processInstanceId") String processInstantId) {
     ProcessInstance processInstance = runService.createProcessInstanceQuery()
         .processInstanceId(processInstantId).singleResult();
@@ -77,6 +82,10 @@ public class LeaveApplyController {
 
   @ApiOperation(value = "审核请假", produces = "application/json")
   @GetMapping(value = "/audit")
+  @ApiImplicitParams({
+      @ApiImplicitParam(paramType="query", name = "approval", value = "确认状态", required = true, dataType = "String"),
+      @ApiImplicitParam(paramType="query", name = "taskId", value = "任务id", required = true, dataType = "String")
+  })
   public Result doAudit(@RequestParam(value = "approval") Integer approval,@RequestParam(value = "taskId") String taskId) {
     Map<String, Object> variables = new HashMap<>(2);
     variables.put("leaderApprove", approval == 1 ? "true" : "false");
@@ -88,6 +97,9 @@ public class LeaveApplyController {
   }
 
   @ApiOperation(value = "销假", produces = "application/json")
+  @ApiImplicitParams({
+      @ApiImplicitParam(paramType="query", name = "taskId", value = "任务id", required = true, dataType = "String")
+  })
   @GetMapping(value = "/reportBack")
   public Result reportBack(@RequestParam(value = "taskId") String taskId) {
     //更新业务对象

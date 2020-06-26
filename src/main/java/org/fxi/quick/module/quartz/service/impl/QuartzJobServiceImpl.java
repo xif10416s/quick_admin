@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.fxi.quick.common.constant.CommonConstant;
 import org.fxi.quick.common.exception.BizException;
+import org.fxi.quick.common.i18n.MessageHelper;
 import org.fxi.quick.module.quartz.entity.QuartzJob;
 import org.fxi.quick.module.quartz.mapper.QuartzJobMapper;
 import org.fxi.quick.module.quartz.service.IQuartzJobService;
@@ -33,6 +34,7 @@ public class QuartzJobServiceImpl extends ServiceImpl<QuartzJobMapper, QuartzJob
 		IQuartzJobService {
 	@Autowired
 	private QuartzJobMapper quartzJobMapper;
+
 	@Autowired
 	private Scheduler scheduler;
 
@@ -114,11 +116,11 @@ public class QuartzJobServiceImpl extends ServiceImpl<QuartzJobMapper, QuartzJob
 
 			scheduler.scheduleJob(jobDetail, trigger);
 		} catch (SchedulerException e) {
-			throw new BizException("创建定时任务失败", e);
+			throw new BizException(MessageHelper.getMessage("A0509",null), e);
 		} catch (RuntimeException e) {
 			throw new BizException(e.getMessage(), e);
 		}catch (Exception e) {
-			throw new BizException("后台找不到该类名：" + jobClassName, e);
+			throw new BizException(MessageHelper.getMessage("A0510",new String[]{jobClassName}), e);
 		}
 	}
 
@@ -134,7 +136,7 @@ public class QuartzJobServiceImpl extends ServiceImpl<QuartzJobMapper, QuartzJob
 			scheduler.deleteJob(JobKey.jobKey(jobClassName));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new BizException("删除定时任务失败");
+			throw new BizException(MessageHelper.getMessage("A0511",null));
 		}
 	}
 

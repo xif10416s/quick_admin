@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,6 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.fxi.quick.common.api.vo.Result;
 import org.fxi.quick.common.model.PageSearchModel;
+import org.fxi.quick.common.util.AccountContextUtil;
 import org.fxi.quick.module.activiti.model.HistoryInstanceSearchModel;
 import org.fxi.quick.module.activiti.model.ProcessDefModel;
 import org.fxi.quick.module.activiti.model.ProcessDefSearchModel;
@@ -91,6 +94,7 @@ public class ActivitiController {
   @Autowired
   private ISysUserRoleService sysUserRoleService;
 
+  @ApiOperation(value = "工作流上传接口", produces = "application/json")
   @RequestMapping(value = "/uploadworkflow", method = RequestMethod.POST)
   public Result fileupload(@RequestParam MultipartFile uploadfile, HttpServletRequest request) {
     try {
@@ -158,6 +162,10 @@ public class ActivitiController {
   @GetMapping(value = "/showResource")
   @ResponseBody
   @ApiOperation(value = "查看工作流定义", produces = "application/json")
+  @ApiImplicitParams({
+      @ApiImplicitParam(paramType="query", name = "processDefId", value = "流程定义Id", required = true, dataType = "String"),
+      @ApiImplicitParam(paramType="query", name = "resource", value = "图片资源名称", required = true, dataType = "String")
+  })
   public void showResource(@RequestParam("processDefId") String processDefId, @RequestParam("resource") String resource,
       HttpServletResponse response) throws Exception {
     ProcessDefinition def = rep.createProcessDefinitionQuery().processDefinitionId(processDefId).singleResult();
@@ -295,7 +303,7 @@ public class ActivitiController {
       LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
       processInstanceModel.setStartTime(localDateTime);
 
-      processInstanceModel.setSuspended(inst.isSuspended()?"是":"否");
+      processInstanceModel.setSuspended(inst.isSuspended()?"否":"是");
       processInstanceModel.setName(inst.getName());
       processInstanceModel.setProcessInstanceId(inst.getProcessInstanceId());
       modelList.add(processInstanceModel);
@@ -308,7 +316,49 @@ public class ActivitiController {
     return result;
 
   }
-    // TODO查看所有我发起的流程
+    // TODO查看所有
+
+  @RequestMapping(value = "/userStartProcessInstance", method = RequestMethod.POST)
+  @ResponseBody
+  @ApiOperation(value = "我发起的流程", produces = "application/json")
+  public Result<IPage<ProcessInstanceModel>> userStartProcessInstance(@RequestBody PageSearchModel searchModel) {
+    ProcessInstanceQuery processInstanceQuery = runService.createProcessInstanceQuery();
+    String userName = AccountContextUtil.getAccountContext().getUserName();
+    processInstanceQuery.startedBy(userName);
+    int firstRow = (searchModel.getPageNo() - 1) * searchModel.getPageSize();
+
+    List<ProcessInstance> list = processInstanceQuery
+        .listPage(firstRow, searchModel.getPageSize());
+    int total = processInstanceQuery.list().size();
+    Page<ProcessInstanceModel> page = new Page<>(searchModel.getPageNo(),
+        searchModel.getPageSize());
+
+    Result<IPage<ProcessInstanceModel>> result = new Result<>();
+    List<ProcessInstanceModel> modelList = new ArrayList<>(16);
+    list.stream().forEach(inst ->{
+      ProcessInstanceModel processInstanceModel = new ProcessInstanceModel();
+      processInstanceModel.setBusinessKey(inst.getBusinessKey());
+      processInstanceModel.setProcessDefinitionId(inst.getProcessDefinitionId());
+      processInstanceModel.setStartUserId(inst.getStartUserId());
+      Date date = inst.getStartTime();
+      Instant instant = date.toInstant();
+      ZoneId zoneId = ZoneId.systemDefault();
+      LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+      processInstanceModel.setStartTime(localDateTime);
+
+      processInstanceModel.setSuspended(inst.isSuspended()?"否":"是");
+      processInstanceModel.setName(inst.getName());
+      processInstanceModel.setProcessInstanceId(inst.getProcessInstanceId());
+      modelList.add(processInstanceModel);
+    });
+
+    page.setTotal(total);
+    page.setCurrent(searchModel.getPageNo());
+    page.setRecords(modelList);
+    result.setResult(page);
+    return result;
+
+  }
 
   @ApiOperation(value = "我的待处理任务", produces = "application/json")
   @PostMapping(value = "/todoTaskList")
