@@ -38,7 +38,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <guava.version>27.0.1-jre</guava.version>
         <jackson.version>2.9.8</jackson.version>
-        <mysql.version>5.1.49</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <hutool-all.version>5.2.3</hutool-all.version>
         <securty.shrio.version>1.5.2</securty.shrio.version>
         <swagger2-spring.version>2.9.2</swagger2-spring.version>
