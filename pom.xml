@@ -40,7 +40,7 @@
         <jackson.version>2.9.8</jackson.version>
         <mysql.version>5.1.49</mysql.version>
         <hutool-all.version>5.2.3</hutool-all.version>
-        <securty.shrio.version>1.5.2</securty.shrio.version>
+        <securty.shrio.version>1.7.1</securty.shrio.version>
         <swagger2-spring.version>2.9.2</swagger2-spring.version>
         <activiti.version>6.0.0</activiti.version>
     </properties>
